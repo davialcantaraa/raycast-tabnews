@@ -1,4 +1,4 @@
-import { List } from "@raycast/api";
+import { List, Toast, showToast } from "@raycast/api";
 import { useFetch } from "@raycast/utils";
 import crypto from "node:crypto";
 import { useState } from "react";
@@ -10,7 +10,15 @@ import { Article } from "./types";
 export default function Command() {
   const [category, setCategory] = useState(DEFAULT_CATEGORY);
 
-  const { isLoading, data: articles } = useFetch<Article[]>(`${BASE_API_URL}/${category}`);
+  const { isLoading, data: articles } = useFetch<Article[]>(`${BASE_API_URL}/${category}`, {
+    onError: (error) => {
+      showToast({
+        title: "Something went wrong",
+        style: Toast.Style.Failure,
+        message: error.message,
+      });
+    },
+  });
 
   return (
     <List
